@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar de Gastos Hormiga</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+        colors: {
+          crema:  '#FAF6F0',
+          arena:  '#F3ECE2',
+          nude:   '#E7D8C9',
+          morado: '#8B7AB8',
+          uva:    '#6B5B93',
+          tinta:  '#40394D',
+          pastel: '#D9C7E8',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { background-color: #FAF6F0; }
+  .card-shadow { box-shadow: 0 8px 24px -12px rgba(107, 91, 147, 0.25); }
+  input:focus, select:focus { outline: none; }
+  @keyframes popIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+  .pop-in { animation: popIn .35s ease both; }
+  @keyframes fadeOut { to { opacity: 0; transform: translateX(24px); } }
+  .removing { animation: fadeOut .25s ease both; }
+  ::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .55; }
+</style>
+</head>
+<body class="font-sans text-tinta min-h-screen">
+
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+
+    <!-- Encabezado -->
+    <header class="mb-8 flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-uva text-white grid place-items-center text-2xl card-shadow">🧾</div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Radar de Gastos Hormiga</h1>
+        <p class="text-sm text-tinta/60">Detecta a tiempo esos pequeños fugaces de presupuesto.</p>
+      </div>
+    </header>
+
+    <!-- Pestañas de navegación -->
+    <nav class="mb-6 bg-white rounded-2xl card-shadow p-1.5 flex gap-1" aria-label="Navegación">
+      <button id="tab-registrar" type="button"
+        class="flex-1 text-sm font-semibold rounded-xl py-2.5 px-2 sm:px-4 transition bg-uva text-white card-shadow">
+        ➕ <span class="hidden sm:inline">Registrar gasto</span><span class="sm:hidden">Gasto</span>
+      </button>
+      <button id="tab-ingresos" type="button"
+        class="flex-1 text-sm font-semibold rounded-xl py-2.5 px-2 sm:px-4 transition text-tinta/60 hover:text-uva hover:bg-crema">
+        💰 <span class="hidden sm:inline">Ingresos</span><span class="sm:hidden">Ingresos</span> <span id="badge-ingresos" class="ml-0.5 text-[11px] font-bold bg-green-100 text-green-700 rounded-full px-2 py-0.5 align-middle">0</span>
+      </button>
+      <button id="tab-fijos" type="button"
+        class="flex-1 text-sm font-semibold rounded-xl py-2.5 px-2 sm:px-4 transition text-tinta/60 hover:text-uva hover:bg-crema">
+        📌 <span class="hidden sm:inline">Gastos fijos</span><span class="sm:hidden">Fijos</span> <span id="badge-fijos" class="ml-0.5 text-[11px] font-bold bg-orange-100 text-orange-700 rounded-full px-2 py-0.5 align-middle">0</span>
+      </button>
+      <button id="tab-registros" type="button"
+        class="flex-1 text-sm font-semibold rounded-xl py-2.5 px-2 sm:px-4 transition text-tinta/60 hover:text-uva hover:bg-crema">
+        📋 <span class="hidden sm:inline">Ver gastos</span><span class="sm:hidden">Gastos</span> <span id="badge-registros" class="ml-0.5 text-[11px] font-bold bg-pastel text-uva rounded-full px-2 py-0.5 align-middle">0</span>
+      </button>
+    </nav>
+
+    <!-- Vista: Registrar -->
+    <div id="vista-registrar">
+    <section class="bg-white rounded-3xl card-shadow p-5 sm:p-7 mb-6" aria-label="Registro de gasto">
+      <form id="form-gasto" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label for="desc" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Descripción</label>
+          <input id="desc" type="text" required maxlength="60" placeholder="Ej: Café en la esquina"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition placeholder:text-tinta/30">
+        </div>
+        <div>
+          <label for="monto" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Monto</label>
+          <input id="monto" type="number" required min="0.01" step="0.01" inputmode="decimal" placeholder="0.00"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition placeholder:text-tinta/30">
+        </div>
+        <div>
+          <label for="categoria" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Categoría</label>
+          <select id="categoria"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition appearance-none">
+            <option value="☕ Antojo / Café">☕ Antojo / Café</option>
+            <option value="🍔 Comida fuera">🍔 Comida fuera</option>
+            <option value="🚕 Transporte menor">🚕 Transporte menor</option>
+            <option value="🛍️ Ocio / Compras">🛍️ Ocio / Compras</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="detonante" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">¿Por qué lo compré? <span class="normal-case font-normal">(detonante emocional)</span></label>
+          <div id="detonantes" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" data-det="😫 Cansancio" class="det-btn text-xs font-semibold rounded-xl px-3 py-2.5 border border-nude/60 bg-crema transition text-tinta/60 hover:text-uva hover:border-morado/50">😫 Cansancio</button>
+            <button type="button" data-det="⌛ Falta de tiempo" class="det-btn text-xs font-semibold rounded-xl px-3 py-2.5 border border-nude/60 bg-crema transition text-tinta/60 hover:text-uva hover:border-morado/50">⌛ Falta de tiempo</button>
+            <button type="button" data-det="🎉 Ocio social" class="det-btn text-xs font-semibold rounded-xl px-3 py-2.5 border border-nude/60 bg-crema transition text-tinta/60 hover:text-uva hover:border-morado/50">🎉 Ocio social</button>
+            <button type="button" data-det="🍫 Antojo puro" class="det-btn text-xs font-semibold rounded-xl px-3 py-2.5 border border-nude/60 bg-crema transition text-tinta/60 hover:text-uva hover:border-morado/50">🍫 Antojo puro</button>
+          </div>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="fecha" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Fecha</label>
+          <input id="fecha" type="datetime-local"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+        </div>
+        <button type="submit"
+          class="sm:col-span-2 mt-1 bg-uva hover:bg-morado active:scale-[.98] text-white font-semibold text-sm rounded-xl py-3.5 card-shadow transition">
+          ✅ Guardar este gasto
+        </button>
+      </form>
+    </section>
+    </div><!-- /vista-registrar -->
+
+    <!-- Vista: Ingresos -->
+    <div id="vista-ingresos" class="hidden">
+    <section class="bg-white rounded-3xl card-shadow p-5 sm:p-7 mb-6" aria-label="Registro de ingreso">
+      <h2 class="text-base font-bold mb-4 flex items-center gap-2">
+        <span class="w-1.5 h-5 rounded-full bg-green-400 inline-block"></span> Registrar ingreso
+      </h2>
+      <form id="form-ingreso" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label for="ing-desc" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Descripción</label>
+          <input id="ing-desc" type="text" required maxlength="60" placeholder="Ej: Trabajo freelance, Quincena"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition placeholder:text-tinta/30">
+        </div>
+        <div>
+          <label for="ing-monto" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Monto</label>
+          <input id="ing-monto" type="number" required min="0.01" step="0.01" inputmode="decimal" placeholder="0.00"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition placeholder:text-tinta/30">
+        </div>
+        <div>
+          <label for="ing-fecha" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Fecha</label>
+          <input id="ing-fecha" type="datetime-local"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+        </div>
+        <button type="submit"
+          class="sm:col-span-2 mt-1 bg-green-600 hover:bg-green-700 active:scale-[.98] text-white font-semibold text-sm rounded-xl py-3.5 card-shadow transition">
+          ✅ Guardar este ingreso
+        </button>
+      </form>
+    </section>
+
+    <section class="bg-white rounded-3xl card-shadow p-5 sm:p-7" aria-label="Historial de ingresos">
+      <div class="flex items-center justify-between mb-4 gap-2">
+        <h2 class="text-base font-bold flex items-center gap-2">
+          <span class="w-1.5 h-5 rounded-full bg-green-200 inline-block"></span> Historial de ingresos
+        </h2>
+        <button id="btn-limpiar-ingresos" class="hidden text-xs font-semibold text-tinta/40 hover:text-red-400 transition">🗑️ Borrar todos los ingresos</button>
+      </div>
+      <ul id="lista-ingresos" class="divide-y divide-arena/80"></ul>
+      <p id="lista-ingresos-vacia" class="text-sm text-tinta/40 text-center py-8">
+        Sin ingresos registrados por ahora. 🌱
+      </p>
+    </section>
+    </div><!-- /vista-ingresos -->
+
+    <!-- Vista: Gastos Fijos -->
+    <div id="vista-fijos" class="hidden">
+    <section class="bg-white rounded-3xl card-shadow p-5 sm:p-7 mb-6" aria-label="Registro de gasto fijo">
+      <h2 class="text-base font-bold mb-1 flex items-center gap-2">
+        <span class="w-1.5 h-5 rounded-full bg-orange-400 inline-block"></span> Registrar gasto fijo
+      </h2>
+      <p class="text-xs text-tinta/50 mb-4">Gastos recurrentes: arriendo, servicios, suscripciones, cuotas…</p>
+      <form id="form-fijo" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label for="fijo-desc" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Descripción</label>
+          <input id="fijo-desc" type="text" required maxlength="60" placeholder="Ej: Arriendo, Netflix, Internet"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition placeholder:text-tinta/30">
+        </div>
+        <div>
+          <label for="fijo-monto" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Monto</label>
+          <input id="fijo-monto" type="number" required min="0.01" step="0.01" inputmode="decimal" placeholder="0.00"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition placeholder:text-tinta/30">
+        </div>
+        <div>
+          <label for="fijo-categoria" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Tipo de gasto fijo</label>
+          <select id="fijo-categoria"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition appearance-none">
+            <option value="🏠 Arriendo / Cuota administración">🏠 Arriendo / Cuota administración</option>
+            <option value="💡 Servicios públicos (luz, agua, gas)">💡 Servicios públicos (luz, agua, gas)</option>
+            <option value="📱 Internet / Plan celular">📱 Internet / Plan celular</option>
+            <option value="🎬 Suscripciones (streaming, apps)">🎬 Suscripciones (streaming, apps)</option>
+            <option value="🚗 Transporte fijo (gasolina, pico y placa)">🚗 Transporte fijo (gasolina, pico y placa)</option>
+            <option value="💳 Créditos / Cuotas fijas">💳 Créditos / Cuotas fijas</option>
+            <option value="🛡️ Seguros / Salud fija">🛡️ Seguros / Salud fija</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="fijo-fecha" class="block text-xs font-semibold uppercase tracking-wide text-tinta/60 mb-1.5">Fecha</label>
+          <input id="fijo-fecha" type="datetime-local"
+            class="w-full bg-crema rounded-xl px-4 py-3 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+        </div>
+        <button type="submit"
+          class="sm:col-span-2 mt-1 bg-orange-500 hover:bg-orange-600 active:scale-[.98] text-white font-semibold text-sm rounded-xl py-3.5 card-shadow transition">
+          ✅ Guardar este gasto fijo
+        </button>
+      </form>
+    </section>
+
+    <section class="bg-white rounded-3xl card-shadow p-5 sm:p-7" aria-label="Historial de gastos fijos">
+      <div class="flex items-center justify-between mb-4 gap-2">
+        <h2 class="text-base font-bold flex items-center gap-2">
+          <span class="w-1.5 h-5 rounded-full bg-orange-200 inline-block"></span> Historial de gastos fijos
+        </h2>
+        <button id="btn-limpiar-fijos" class="hidden text-xs font-semibold text-tinta/40 hover:text-red-400 transition">🗑️ Borrar todos los gastos fijos</button>
+      </div>
+      <ul id="lista-fijos" class="divide-y divide-arena/80"></ul>
+      <p id="lista-fijos-vacia" class="text-sm text-tinta/40 text-center py-8">
+        Sin gastos fijos registrados por ahora. 🌱
+      </p>
+    </section>
+    </div><!-- /vista-fijos -->
+
+    <!-- Vista: Registros -->
+    <div id="vista-registros" class="hidden">
+
+    <!-- Filtro por fechas -->
+    <section class="bg-white rounded-3xl card-shadow p-5 mb-6" aria-label="Filtro por fechas">
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-wrap gap-2" id="filtros-rapidos">
+          <button data-filtro="hoy" class="filtro-btn text-xs font-semibold rounded-full px-4 py-2 transition">Hoy</button>
+          <button data-filtro="semana" class="filtro-btn text-xs font-semibold rounded-full px-4 py-2 transition">7 días</button>
+          <button data-filtro="mes" class="filtro-btn text-xs font-semibold rounded-full px-4 py-2 transition">Este mes</button>
+          <button data-filtro="todo" class="filtro-btn text-xs font-semibold rounded-full px-4 py-2 transition">Todo</button>
+        </div>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 pt-1 border-t border-arena/80">
+          <div class="flex-1">
+            <label for="filtro-desde" class="block text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-1">Desde</label>
+            <input id="filtro-desde" type="date"
+              class="w-full bg-crema rounded-xl px-3.5 py-2.5 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+          </div>
+          <div class="flex-1">
+            <label for="filtro-hasta" class="block text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-1">Hasta</label>
+            <input id="filtro-hasta" type="date"
+              class="w-full bg-crema rounded-xl px-3.5 py-2.5 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+          </div>
+          <button id="btn-aplicar-fechas" type="button"
+            class="text-xs font-semibold bg-uva hover:bg-morado text-white rounded-xl px-5 py-2.5 card-shadow transition sm:self-end">🔍 Aplicar filtro</button>
+        </div>
+        <p id="etiqueta-filtro" class="text-[11px] text-tinta/45"></p>
+      </div>
+    </section>
+
+    <!-- Resumen según el filtro aplicado (tarjetas clicables) -->
+    <section class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6" aria-label="Resumen">
+      <button id="tarjeta-ingresos" type="button"
+        class="bg-white hover:bg-green-50 rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 group">
+        <p class="text-xs font-semibold uppercase tracking-wide text-green-700/70 group-hover:text-green-600">💰 Total ingresos</p>
+        <p id="total-ingresos" class="text-2xl sm:text-3xl font-extrabold text-green-600 mt-1.5">$ 0</p>
+        <p class="text-[11px] text-tinta/50 mt-1 group-hover:text-green-600/70">👆 clic para verlos</p>
+      </button>
+      <button id="tarjeta-hormiga" type="button"
+        class="bg-gradient-to-br from-uva to-morado hover:from-morado hover:to-uva text-white rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-morado/40">
+        <p class="text-xs font-semibold uppercase tracking-wide opacity-70">🐜 Gastos hormiga</p>
+        <p id="total-gastado" class="text-2xl sm:text-3xl font-extrabold mt-1.5">$0.00</p>
+        <p id="etiqueta-moneda" class="text-[11px] opacity-60 mt-1">👆 clic para verlos abajo</p>
+      </button>
+      <button id="tarjeta-fijos" type="button"
+        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gradient-to-br from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600">
+        <p class="text-xs font-semibold uppercase tracking-wide opacity-70">📌 Gastos fijos</p>
+        <p id="total-fijos" class="text-2xl sm:text-3xl font-extrabold mt-1.5">$ 0</p>
+        <p id="etiqueta-fijos" class="text-[11px] opacity-70 mt-1">👆 clic para verlos</p>
+      </button>
+      <button id="tarjeta-balance" type="button"
+        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300">
+        <p id="balance-titulo" class="text-xs font-semibold uppercase tracking-wide text-tinta/60">⚖️ Balance neto</p>
+        <p id="total-balance" class="text-2xl sm:text-3xl font-extrabold mt-1.5">$ 0</p>
+        <p id="balance-detalle" class="text-[11px] text-tinta/50 mt-1">ingresos − gastos hormiga − gastos fijos</p>
+      </button>
+      <div class="bg-white rounded-3xl card-shadow p-5 sm:p-6 pop-in">
+        <p class="text-xs font-semibold uppercase tracking-wide text-tinta/60">Registros hormiga</p>
+        <p id="total-registros" class="text-2xl sm:text-3xl font-extrabold text-uva mt-1.5">0</p>
+        <p id="etiqueta-registros" class="text-[11px] text-tinta/50 mt-1">movimientos detectados</p>
+      </div>
+      <div class="rounded-3xl card-shadow p-5 sm:p-6 pop-in bg-pastel/30 border border-pastel">
+        <p class="text-xs font-semibold uppercase tracking-wide text-uva/70">CONSEJO 💡</p>
+        <p class="text-[11px] text-tinta/60 mt-1.5 leading-snug">Los gastos hormiga son pequeños gastos diarios que suman mucho. ¡Regístralos todos!</p>
+      </div>
+    </section>
+
+    <!-- Historial de Gastos Fijos (panel desplegable desde la tarjeta) -->
+    <section id="panel-fijos" class="hidden bg-white rounded-3xl card-shadow mb-6" aria-label="Historial de gastos fijos">
+      <div class="flex items-center justify-between p-5 sm:p-6 pb-0 gap-2">
+        <h2 class="text-base font-bold flex items-center gap-2">
+          <span class="w-1.5 h-5 rounded-full bg-orange-400 inline-block"></span> Gastos fijos
+        </h2>
+        <button id="btn-cerrar-fijos" type="button" class="text-xs font-semibold text-tinta/40 hover:text-red-400 transition">✕ Cerrar</button>
+      </div>
+      <!-- Filtro de búsqueda por fechas (solo para fijos) -->
+      <div class="px-5 sm:px-6 pt-4">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 bg-crema rounded-2xl p-3">
+          <div class="flex-1">
+            <label for="fijos-desde" class="block text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-1">Desde</label>
+            <input id="fijos-desde" type="date"
+              class="w-full bg-white rounded-xl px-3.5 py-2.5 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+          </div>
+          <div class="flex-1">
+            <label for="fijos-hasta" class="block text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-1">Hasta</label>
+            <input id="fijos-hasta" type="date"
+              class="w-full bg-white rounded-xl px-3.5 py-2.5 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
+          </div>
+          <button id="btn-fijos-todo" type="button"
+            class="text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-5 py-2.5 card-shadow transition sm:self-end">Ver todos</button>
+        </div>
+        <p id="etiqueta-fijos-filtro" class="text-[11px] text-tinta/45 mt-2 px-1"></p>
+      </div>
+      <div class="p-5 sm:p-6 pt-4">
+        <ul id="lista-fijos-panel" class="divide-y divide-arena/80"></ul>
+        <p id="lista-fijos-panel-vacia" class="text-sm text-tinta/40 text-center py-6">
+          Sin gastos fijos en este rango de fechas. 🔍
+        </p>
+      </div>
+    </section>
+
+    <!-- Desglose por Categorías (acordeón/botón) -->
+    <section class="bg-white rounded-3xl card-shadow mb-6 overflow-hidden" aria-label="Desglose por categorías">
+      <button id="btn-desglose" type="button" aria-expanded="false" aria-controls="contenido-desglose"
+        class="w-full flex items-center justify-between gap-3 p-5 sm:p-6 text-left transition hover:bg-pastel/20 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-morado/40 group">
+        <span class="flex items-center gap-3 min-w-0">
+          <span class="w-10 h-10 shrink-0 rounded-2xl bg-pastel/60 text-uva grid place-items-center text-lg">🥧</span>
+          <span class="min-w-0">
+            <span class="block text-sm font-bold text-tinta truncate">¿Dónde se va el presupuesto?</span>
+            <span id="resumen-desglose" class="block text-[11px] text-tinta/50 truncate">Toca para ver el desglose</span>
+          </span>
+        </span>
+        <span id="chevron-desglose" class="shrink-0 text-tinta/30 group-hover:text-uva transition-transform duration-300 text-lg">⌄</span>
+      </button>
+      <div id="contenido-desglose" class="hidden px-5 sm:px-7 pb-5 sm:pb-6">
+        <div id="desglose" class="space-y-4">
+          <p id="desglose-vacio" class="text-sm text-tinta/40 text-center py-4">Aún no hay datos para analizar.</p>
+        </div>
+      </div>
+    </section>
+
+  <!-- Historial (acordeón/botón) -->
+    <section class="bg-white rounded-3xl card-shadow mb-6 overflow-hidden" aria-label="Historial de gastos">
+      <button id="btn-historial" type="button" aria-expanded="false" aria-controls="contenido-historial"
+        class="w-full flex items-center justify-between gap-3 p-5 sm:p-6 text-left transition hover:bg-pastel/20 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-morado/40 group">
+        <span class="flex items-center gap-3 min-w-0">
+          <span class="w-10 h-10 shrink-0 rounded-2xl bg-nude/60 text-tinta grid place-items-center text-lg">📋</span>
+          <span class="min-w-0">
+            <span class="block text-sm font-bold text-tinta truncate">Historial de gastos hormiga</span>
+            <span id="resumen-historial" class="block text-[11px] text-tinta/50 truncate">Toca para ver el detalle</span>
+          </span>
+        </span>
+        <span id="chevron-historial" class="shrink-0 text-tinta/30 group-hover:text-uva transition-transform duration-300 text-lg">⌄</span>
+      </button>
+      <div id="contenido-historial" class="hidden px-5 sm:px-7 pb-5 sm:pb-6">
+        <div class="flex items-center justify-between mb-4 gap-2">
+          <div class="flex-1"></div>
+          <div class="flex items-center gap-2">
+            <button id="btn-exportar" class="hidden text-xs font-semibold text-tinta/40 hover:text-green-600 transition">📊 Exportar a Excel</button>
+            <button id="btn-limpiar" class="hidden text-xs font-semibold text-tinta/40 hover:text-red-400 transition">🗑️ Borrar todos los gastos</button>
+          </div>
+        </div>
+        <ul id="lista-gastos" class="divide-y divide-arena/80"></ul>
+        <p id="lista-vacia" class="text-sm text-tinta/40 text-center py-8">
+          Sin gastos registrados por ahora. 🌱
+        </p>
+      </div>
+    </section>
+    </div><!-- /vista-registros -->
+
+    <p class="text-center text-[11px] text-tinta/30 mt-8">Tus datos se guardan automáticamente en este navegador.</p>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+
+  const LS_KEY = 'radar-gastos-hormiga';
+  const LS_INGRESOS = 'radar-gastos-hormiga-ingresos';
+  const LS_FIJOS = 'radar-gastos-hormiga-fijos';
+  const COLORES = {
+    '☕ Antojo / Café':    '#B08968',
+    '🍔 Comida fuera':    '#E0A868',
+    '🚕 Transporte menor':'#8B7AB8',
+    '🛍️ Ocio / Compras':  '#C98A9E'
+  };
+
+  // --- Elementos ---
+  const form = document.getElementById('form-gasto');
+  const desc = document.getElementById('desc');
+  const monto = document.getElementById('monto');
+  const categoria = document.getElementById('categoria');
+  const fecha = document.getElementById('fecha');
+  const totalGastado = document.getElementById('total-gastado');
+  const totalRegistros = document.getElementById('total-registros');
+  const listaGastos = document.getElementById('lista-gastos');
+  const listaVacia = document.getElementById('lista-vacia');
+  const desglose = document.getElementById('desglose');
+  const desgloseVacio = document.getElementById('desglose-vacio');
+  const btnLimpiar = document.getElementById('btn-limpiar');
+  const etiquetaMoneda = document.getElementById('etiqueta-moneda');
+  const btnExportar = document.getElementById('btn-exportar');
+  const contDetonantes = document.getElementById('detonantes');
+
+  // --- Detonante emocional seleccionado ---
+  let detonanteSeleccionado = null;
+
+  function pintarDetonantes() {
+    contDetonantes.querySelectorAll('.det-btn').forEach(btn => {
+      const activo = btn.dataset.det === detonanteSeleccionado;
+      btn.className = 'det-btn text-xs font-semibold rounded-xl px-3 py-2.5 border transition ' +
+        (activo
+          ? 'bg-uva text-white border-uva card-shadow'
+          : 'border-nude/60 bg-crema text-tinta/60 hover:text-uva hover:border-morado/50');
+    });
+  }
+
+  contDetonantes.querySelectorAll('.det-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Toggle: si ya estaba seleccionado, se deselecciona
+      detonanteSeleccionado = detonanteSeleccionado === btn.dataset.det ? null : btn.dataset.det;
+      pintarDetonantes();
+    });
+  });
+
+  // --- Pestañas ---
+  const tabRegistrar = document.getElementById('tab-registrar');
+  const tabRegistros = document.getElementById('tab-registros');
+  const tabIngresos = document.getElementById('tab-ingresos');
+  const tabFijos = document.getElementById('tab-fijos');
+  const vistaRegistrar = document.getElementById('vista-registrar');
+  const vistaRegistros = document.getElementById('vista-registros');
+  const vistaIngresos = document.getElementById('vista-ingresos');
+  const vistaFijos = document.getElementById('vista-fijos');
+  const badgeRegistros = document.getElementById('badge-registros');
+  const badgeIngresos = document.getElementById('badge-ingresos');
+  const badgeFijos = document.getElementById('badge-fijos');
+
+  // --- Gastos fijos: elementos ---
+  const formFijo = document.getElementById('form-fijo');
+  const fijoDesc = document.getElementById('fijo-desc');
+  const fijoMonto = document.getElementById('fijo-monto');
+  const fijoCategoria = document.getElementById('fijo-categoria');
+  const fijoFecha = document.getElementById('fijo-fecha');
+  const listaFijos = document.getElementById('lista-fijos');
+  const listaFijosVacia = document.getElementById('lista-fijos-vacia');
+  const btnLimpiarFijos = document.getElementById('btn-limpiar-fijos');
+  const totalFijosEl = document.getElementById('total-fijos');
+  const etiquetaFijos = document.getElementById('etiqueta-fijos');
+
+  // --- Ingresos: elementos ---
+  const formIngreso = document.getElementById('form-ingreso');
+  const ingDesc = document.getElementById('ing-desc');
+  const ingMonto = document.getElementById('ing-monto');
+  const ingFecha = document.getElementById('ing-fecha');
+  const listaIngresos = document.getElementById('lista-ingresos');
+  const listaIngresosVacia = document.getElementById('lista-ingresos-vacia');
+  const btnLimpiarIngresos = document.getElementById('btn-limpiar-ingresos');
+  const totalIngresosEl = document.getElementById('total-ingresos');
+  const totalBalanceEl = document.getElementById('total-balance');
+  const tarjetaBalance = document.getElementById('tarjeta-balance');
+  const balanceTitulo = document.getElementById('balance-titulo');
+  const balanceDetalle = document.getElementById('balance-detalle');
+
+  // --- Filtro por fechas ---
+  const filtrosRapidos = document.getElementById('filtros-rapidos');
+  const filtroDesde = document.getElementById('filtro-desde');
+  const filtroHasta = document.getElementById('filtro-hasta');
+  const btnAplicarFechas = document.getElementById('btn-aplicar-fechas');
+  const etiquetaFiltro = document.getElementById('etiqueta-filtro');
+
+  // Filtro activo: { tipo: 'todo'|'hoy'|'semana'|'mes'|'rango', desde?: ts, hasta?: ts }
+  let filtro = { tipo: 'todo' };
+  let filtroCategoria = null;
+
+  function inicioDia(d) {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  }
+
+  function calcularRango(f) {
+    const hoy = inicioDia(new Date());
+    if (f.tipo === 'hoy') return { desde: hoy.getTime(), hasta: Infinity };
+    if (f.tipo === 'semana') return { desde: hoy.getTime() - 6 * 86400000, hasta: Infinity };
+    if (f.tipo === 'mes') {
+      const ini = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+      return { desde: ini.getTime(), hasta: Infinity };
+    }
+    if (f.tipo === 'rango') {
+      const desde = f.desde != null ? inicioDia(new Date(f.desde)).getTime() : -Infinity;
+      // "hasta" incluye todo el día seleccionado
+      const hasta = f.hasta != null ? inicioDia(new Date(f.hasta)).getTime() + 86400000 - 1 : Infinity;
+      return { desde, hasta };
+    }
+    return { desde: -Infinity, hasta: Infinity }; // todo
+  }
+
+  function gastosFiltrados() {
+    let lista = gastos;
+    // Filtro de fecha
+    if (filtro.tipo !== 'todo') {
+      const { desde, hasta } = calcularRango(filtro);
+      lista = lista.filter(g => g.fecha >= desde && g.fecha <= hasta);
+    }
+    // Filtro de categoría (desde el desglose)
+    if (filtroCategoria) {
+      lista = lista.filter(g => g.categoria === filtroCategoria);
+    }
+    return lista;
+  }
+
+  // Ingresos filtrados SOLO por fecha (mismo rango que el filtro activo)
+  function ingresosFiltrados() {
+    if (filtro.tipo === 'todo') return ingresos;
+    const { desde, hasta } = calcularRango(filtro);
+    return ingresos.filter(i => i.fecha >= desde && i.fecha <= hasta);
+  }
+
+  // Gastos fijos filtrados por fecha (mismo rango que el filtro activo)
+  function fijosFiltrados() {
+    if (filtro.tipo === 'todo') return fijos;
+    const { desde, hasta } = calcularRango(filtro);
+    return fijos.filter(f => f.fecha >= desde && f.fecha <= hasta);
+  }
+
+  function textoFiltro() {
+    const fFecha = ts => new Date(ts).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
+    let txt;
+    if (filtro.tipo === 'hoy') txt = 'Mostrando solo hoy';
+    else if (filtro.tipo === 'semana') txt = 'Mostrando los últimos 7 días';
+    else if (filtro.tipo === 'mes') txt = 'Mostrando este mes';
+    else if (filtro.tipo === 'rango') {
+      const d = filtro.desde != null ? fFecha(filtro.desde) : '—';
+      const h = filtro.hasta != null ? fFecha(filtro.hasta) : '—';
+      txt = `Mostrando desde ${d} hasta ${h}`;
+    } else txt = 'Mostrando todos los registros';
+    if (filtroCategoria) txt += ` · solo ${filtroCategoria}`;
+    return txt;
+  }
+
+  function pintarBotonesFiltro() {
+    filtrosRapidos.querySelectorAll('.filtro-btn').forEach(btn => {
+      const activo = btn.dataset.filtro === filtro.tipo;
+      btn.className = 'filtro-btn text-xs font-semibold rounded-full px-4 py-2 transition ' +
+        (activo ? 'bg-uva text-white card-shadow' : 'bg-crema text-tinta/60 hover:text-uva hover:bg-pastel/40');
+    });
+  }
+
+  const claseActiva = 'flex-1 text-sm font-semibold rounded-xl py-2.5 px-2 sm:px-4 transition bg-uva text-white card-shadow';
+  const claseInactiva = 'flex-1 text-sm font-semibold rounded-xl py-2.5 px-2 sm:px-4 transition text-tinta/60 hover:text-uva hover:bg-crema';
+
+  function activarTab(nombre) {
+    tabRegistrar.className = nombre === 'registrar' ? claseActiva : claseInactiva;
+    tabIngresos.className = nombre === 'ingresos' ? claseActiva : claseInactiva;
+    tabFijos.className = nombre === 'fijos' ? claseActiva : claseInactiva;
+    tabRegistros.className = nombre === 'registros' ? claseActiva : claseInactiva;
+    vistaRegistrar.classList.toggle('hidden', nombre !== 'registrar');
+    vistaIngresos.classList.toggle('hidden', nombre !== 'ingresos');
+    vistaFijos.classList.toggle('hidden', nombre !== 'fijos');
+    vistaRegistros.classList.toggle('hidden', nombre !== 'registros');
+    localStorage.setItem('radar-gastos-hormiga-tab', nombre);
+  }
+
+  tabRegistrar.addEventListener('click', () => activarTab('registrar'));
+  tabIngresos.addEventListener('click', () => activarTab('ingresos'));
+  tabFijos.addEventListener('click', () => activarTab('fijos'));
+  tabRegistros.addEventListener('click', () => activarTab('registros'));
+
+  // --- Tarjetas del dashboard clicables ---
+  const tarjetaIngresos = document.getElementById('tarjeta-ingresos');
+  const tarjetaHormiga = document.getElementById('tarjeta-hormiga');
+  const tarjetaFijos = document.getElementById('tarjeta-fijos');
+
+  // Total ingresos → muestra todos los ingresos (pestaña Ingresos)
+  tarjetaIngresos.addEventListener('click', () => {
+    filtro = { tipo: 'todo' }; // sin filtro de fechas → muestra TODOS
+    filtroCategoria = null;
+    filtroDesde.value = '';
+    filtroHasta.value = '';
+    render();
+    activarTab('ingresos');
+  });
+
+  // Gastos hormiga → abre el historial de gastos hormiga (acordeón) y hace scroll
+  tarjetaHormiga.addEventListener('click', () => {
+    filtro = { tipo: 'todo' };
+    filtroCategoria = null;
+    filtroDesde.value = '';
+    filtroHasta.value = '';
+    render();
+    activarTab('registros');
+    alternarHistorial(true); // abrir el historial
+    document.getElementById('btn-historial').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Gastos fijos → muestra el panel de historial de fijos AQUÍ (desplegable con filtro)
+  tarjetaFijos.addEventListener('click', () => {
+    const panel = document.getElementById('panel-fijos');
+    const abierto = !panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+    if (!abierto) {
+      renderPanelFijos();
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // Cerrar panel de fijos
+  document.getElementById('btn-cerrar-fijos').addEventListener('click', () => {
+    document.getElementById('panel-fijos').classList.add('hidden');
+  });
+
+  // Balance neto → muestra el desglose (dónde se va el dinero)
+  tarjetaBalance.addEventListener('click', () => {
+    activarTab('registros');
+    alternarDesglose(true); // abrir el desglose
+    document.getElementById('btn-desglose').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // Tarjeta "Registros" del panel de resumen → abre la vista de registros
+  const tarjetaRegistros = document.getElementById('tarjeta-registros');
+  if (tarjetaRegistros) tarjetaRegistros.addEventListener('click', () => activarTab('registros'));
+
+  // --- Acordeón "¿Dónde se va el presupuesto?" ---
+  const btnDesglose = document.getElementById('btn-desglose');
+  const contenidoDesglose = document.getElementById('contenido-desglose');
+  const chevronDesglose = document.getElementById('chevron-desglose');
+  const resumenDesglose = document.getElementById('resumen-desglose');
+  const LS_DESGLOSE_ABIERTO = 'radar-gastos-hormiga-desglose';
+
+  function alternarDesglose(forzar) {
+    const abierto = forzar !== undefined ? forzar : contenidoDesglose.classList.contains('hidden');
+    contenidoDesglose.classList.toggle('hidden', !abierto);
+    btnDesglose.setAttribute('aria-expanded', String(abierto));
+    chevronDesglose.style.transform = abierto ? 'rotate(180deg)' : '';
+    localStorage.setItem(LS_DESGLOSE_ABIERTO, abierto ? '1' : '0');
+  }
+
+  btnDesglose.addEventListener('click', () => alternarDesglose());
+
+  // --- Acordeón "Historial de gastos hormiga" ---
+  const btnHistorial = document.getElementById('btn-historial');
+  const contenidoHistorial = document.getElementById('contenido-historial');
+  const chevronHistorial = document.getElementById('chevron-historial');
+  const resumenHistorial = document.getElementById('resumen-historial');
+  const LS_HISTORIAL_ABIERTO = 'radar-gastos-hormiga-historial';
+
+  function alternarHistorial(forzar) {
+    const abierto = forzar !== undefined ? forzar : contenidoHistorial.classList.contains('hidden');
+    contenidoHistorial.classList.toggle('hidden', !abierto);
+    btnHistorial.setAttribute('aria-expanded', String(abierto));
+    chevronHistorial.style.transform = abierto ? 'rotate(180deg)' : '';
+    localStorage.setItem(LS_HISTORIAL_ABIERTO, abierto ? '1' : '0');
+  }
+
+  btnHistorial.addEventListener('click', () => alternarHistorial());
+
+  // --- Estado / Persistencia ---
+  let gastos = [];
+  let ingresos = [];
+  let fijos = [];
+
+  function cargar() {
+    try {
+      gastos = JSON.parse(localStorage.getItem(LS_KEY)) || [];
+    } catch (e) { gastos = []; }
+    try {
+      ingresos = JSON.parse(localStorage.getItem(LS_INGRESOS)) || [];
+    } catch (e) { ingresos = []; }
+    try {
+      fijos = JSON.parse(localStorage.getItem(LS_FIJOS)) || [];
+    } catch (e) { fijos = []; }
+  }
+
+  function guardar() {
+    localStorage.setItem(LS_KEY, JSON.stringify(gastos));
+    localStorage.setItem(LS_INGRESOS, JSON.stringify(ingresos));
+    localStorage.setItem(LS_FIJOS, JSON.stringify(fijos));
+  }
+
+  // --- Utilidades ---
+  // Formato peso colombiano: sin decimales, separador de miles.
+  // Ej: 3500 -> $ 3.500 · 1500000 -> $ 1.500.000
+  const fmt = valor => new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(Math.round(valor));
+  const fmtFecha = ts => new Date(ts).toLocaleString('es', {
+    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+
+  function ahoraLocal() {
+    const d = new Date();
+    const off = d.getTimezoneOffset();
+    return new Date(d.getTime() - off * 60000)
+      .toISOString()
+      .slice(0, 16); // yyyy-MM-ddTHH:mm
+  }
+
+  // --- Render ---
+  function render() {
+    // Resumen (basado en los gastos filtrados)
+    const visibles = gastosFiltrados();
+    const total = visibles.reduce((s, g) => s + g.monto, 0);
+    totalGastado.textContent = fmt(total);
+    etiquetaMoneda.textContent = 'en gastos hormiga · COP';
+    totalRegistros.textContent = visibles.length;
+    const etiquetaRegistros = document.getElementById('etiqueta-registros');
+    if (etiquetaRegistros) {
+      etiquetaRegistros.textContent = gastos.length
+        ? (visibles.length === gastos.length ? 'movimientos detectados' : `de ${gastos.length} registrados`)
+        : 'movimientos detectados';
+    }
+
+    // Ingresos y balance (ingresos filtrados por fecha, sin filtro de categoría)
+    const ingVisibles = ingresosFiltrados();
+    const totalIng = ingVisibles.reduce((s, i) => s + i.monto, 0);
+    totalIngresosEl.textContent = fmt(totalIng);
+    badgeIngresos.textContent = ingresos.length;
+
+    // Gastos fijos (filtrados por fecha)
+    const fijosVisibles = fijosFiltrados();
+    const totalFijos = fijosVisibles.reduce((s, f) => s + f.monto, 0);
+    totalFijosEl.textContent = fmt(totalFijos);
+    badgeFijos.textContent = fijos.length;
+    etiquetaFijos.textContent = fijos.length
+      ? `${fijos.length} gasto${fijos.length > 1 ? 's' : ''} fijo${fijos.length > 1 ? 's' : ''} · arriendo, servicios, suscripciones…`
+      : 'arriendo, servicios, suscripciones…';
+
+    // Balance neto: ingresos − gastos hormiga − gastos fijos
+    const balance = totalIng - total - totalFijos;
+    totalBalanceEl.textContent = fmt(balance);
+    // Color del balance: verde si es positivo, rojo/alerta si negativo
+    if (balance >= 0) {
+      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 bg-gradient-to-br from-green-500 to-emerald-600 text-white';
+      balanceTitulo.className = 'text-xs font-semibold uppercase tracking-wide opacity-70';
+      balanceTitulo.textContent = '⚖️ Balance neto';
+      balanceDetalle.className = 'text-[11px] opacity-70 mt-1';
+      balanceDetalle.textContent = 'te queda dinero disponible 🎉';
+    } else {
+      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-red-300 bg-gradient-to-br from-rose-500 to-red-600 text-white';
+      balanceTitulo.className = 'text-xs font-semibold uppercase tracking-wide opacity-70';
+      balanceTitulo.textContent = '⚠️ Balance neto';
+      balanceDetalle.className = 'text-[11px] opacity-70 mt-1';
+      balanceDetalle.textContent = 'tus gastos superan tus ingresos';
+    }
+
+    // Historial de ingresos
+    listaIngresos.innerHTML = '';
+    const hayIngresos = ingresos.length > 0;
+    listaIngresosVacia.classList.toggle('hidden', hayIngresos);
+    btnLimpiarIngresos.classList.toggle('hidden', !hayIngresos);
+    listaIngresosVacia.textContent = hayIngresos
+      ? 'Ningún ingreso en este rango de fechas. 🔍'
+      : 'Sin ingresos registrados por ahora. 🌱';
+
+    [...ingVisibles].sort((a, b) => b.fecha - a.fecha).forEach(i => {
+      const li = document.createElement('li');
+      li.className = 'py-3.5 flex items-center gap-3 pop-in';
+      li.dataset.id = i.id;
+      li.innerHTML = `
+        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:#34D39922">💵</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold truncate">${escapeHTML(i.descripcion)}</p>
+          <p class="text-[11px] text-tinta/50 truncate">${fmtFecha(i.fecha)}</p>
+        </div>
+        <p class="text-sm font-bold text-green-600 whitespace-nowrap">+${fmt(i.monto)}</p>
+        <button class="w-8 h-8 shrink-0 grid place-items-center rounded-lg text-tinta/30 hover:text-red-500 hover:bg-red-50 transition" title="Eliminar" aria-label="Eliminar ingreso">🗑️</button>
+      `;
+      li.querySelector('button').addEventListener('click', () => eliminarIngreso(i.id, li));
+      listaIngresos.appendChild(li);
+    });
+
+    // Historial de gastos fijos
+    listaFijos.innerHTML = '';
+    const hayFijos = fijos.length > 0;
+    listaFijosVacia.classList.toggle('hidden', hayFijos);
+    btnLimpiarFijos.classList.toggle('hidden', !hayFijos);
+    listaFijosVacia.textContent = fijos.length
+      ? (fijosVisibles.length ? '' : 'Ningún gasto fijo en este rango de fechas. 🔍')
+      : 'Sin gastos fijos registrados por ahora. 🌱';
+    listaFijosVacia.classList.toggle('hidden', fijosVisibles.length > 0);
+
+    [...fijosVisibles].sort((a, b) => b.fecha - a.fecha).forEach(f => {
+      const li = document.createElement('li');
+      li.className = 'py-3.5 flex items-center gap-3 pop-in';
+      li.dataset.id = f.id;
+      const emoji = (f.categoria || '📌').split(' ')[0];
+      li.innerHTML = `
+        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:#F9731622">${emoji}</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold truncate">${escapeHTML(f.descripcion)}</p>
+          <p class="text-[11px] text-tinta/50 truncate">${fmtFecha(f.fecha)} · ${escapeHTML(f.categoria || '')}</p>
+        </div>
+        <p class="text-sm font-bold text-orange-600 whitespace-nowrap">${fmt(f.monto)}</p>
+        <button class="w-8 h-8 shrink-0 grid place-items-center rounded-lg text-tinta/30 hover:text-red-500 hover:bg-red-50 transition" title="Eliminar" aria-label="Eliminar gasto fijo">🗑️</button>
+      `;
+      li.querySelector('button').addEventListener('click', () => eliminarFijo(f.id, li));
+      listaFijos.appendChild(li);
+    });
+
+    badgeRegistros.textContent = gastos.length;
+    etiquetaFiltro.textContent = textoFiltro();
+    pintarBotonesFiltro();
+
+    // Historial
+    listaGastos.innerHTML = '';
+    const hayDatos = visibles.length > 0;
+    listaVacia.classList.toggle('hidden', hayDatos);
+    btnLimpiar.classList.toggle('hidden', gastos.length === 0);
+    btnExportar.classList.toggle('hidden', visibles.length === 0);
+    listaVacia.textContent = gastos.length
+      ? 'Ningún gasto en este rango de fechas. 🔍'
+      : 'Sin gastos registrados por ahora. 🌱';
+
+    [...visibles].sort((a, b) => b.fecha - a.fecha).forEach(g => {
+      const li = document.createElement('li');
+      li.className = 'py-3.5 flex items-center gap-3 pop-in';
+      li.dataset.id = g.id;
+      li.innerHTML = `
+        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:${(COLORES[g.categoria] || '#B08968')}22">${g.categoria.split(' ')[0]}</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold truncate">${escapeHTML(g.descripcion)}</p>
+          <p class="text-[11px] text-tinta/50 truncate">${fmtFecha(g.fecha)} · ${g.categoria}${g.detonante ? ' · ' + escapeHTML(g.detonante) : ''}</p>
+        </div>
+        <p class="text-sm font-bold whitespace-nowrap">${fmt(g.monto)}</p>
+        <button class="w-8 h-8 shrink-0 grid place-items-center rounded-lg text-tinta/30 hover:text-red-500 hover:bg-red-50 transition" title="Eliminar" aria-label="Eliminar gasto">🗑️</button>
+      `;
+      li.querySelector('button').addEventListener('click', () => eliminar(g.id, li));
+      listaGastos.appendChild(li);
+    });
+
+    renderDesglose(total);
+
+    // Refrescar el panel de gastos fijos si está abierto (respeta el filtro principal)
+    const panelFijosAbierto = !document.getElementById('panel-fijos').classList.contains('hidden');
+    if (panelFijosAbierto) renderPanelFijos();
+
+    // Resumen del botón del acordeón de historial
+    if (resumenHistorial) {
+      resumenHistorial.textContent = visibles.length
+        ? `${visibles.length} gasto${visibles.length !== 1 ? 's' : ''} hormiga${visibles.length !== 1 ? 's' : ''} · toca para ver el detalle`
+        : 'Sin gastos en este filtro · toca para ver';
+    }
+  }
+
+  function renderDesglose(total) {
+    // Totales por categoría (solo de los gastos filtrados/visibles)
+    const visibles = gastosFiltrados();
+    const porCat = {};
+    visibles.forEach(g => { porCat[g.categoria] = (porCat[g.categoria] || 0) + g.monto; });
+    const entradas = Object.entries(porCat).sort((a, b) => b[1] - a[1]);
+
+    desglose.innerHTML = '';
+    desgloseVacio.classList.toggle('hidden', entradas.length > 0);
+    if (!entradas.length) {
+      desglose.appendChild(desgloseVacio);
+      resumenDesglose.textContent = 'Toca para ver el desglose';
+      return;
+    }
+
+    // Resumen del botón: categoría dominante
+    const [topCat, topSuma] = entradas[0];
+    const topPct = total > 0 ? (topSuma / total) * 100 : 0;
+    resumenDesglose.textContent = entradas.length === 1
+      ? `Todo en ${topCat} (${topPct.toFixed(0)}%)`
+      : `Mayor: ${topCat} · ${topPct.toFixed(0)}% · toca para ver todo`;
+
+    entradas.forEach(([cat, suma]) => {
+      const pct = total > 0 ? (suma / total) * 100 : 0;
+      const color = COLORES[cat] || '#B08968';
+      const fila = document.createElement('div');
+      const activa = filtroCategoria === cat;
+      fila.className = 'cat-fila rounded-2xl p-3 -mx-1 transition cursor-pointer hover:bg-crema active:scale-[.99] ' + (activa ? 'bg-pastel/30 ring-1 ring-morado/40' : '');
+      fila.title = activa ? `Filtrado: ${cat} — clic para quitar filtro` : `Clic para ver solo los gastos de ${cat}`;
+      fila.innerHTML = `
+        <div class="flex items-center justify-between text-sm mb-1.5 gap-2">
+          <span class="font-medium truncate">${escapeHTML(cat)}</span>
+          <span class="text-tinta/60 font-semibold whitespace-nowrap">${fmt(suma)} <span class="text-tinta/40 font-normal">· ${pct.toFixed(1)}%</span>${activa ? ' <span class="text-uva text-[10px] align-middle">✓</span>' : ''}</span>
+        </div>
+        <div class="h-2.5 rounded-full bg-arena overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-700 ease-out" style="width:${pct}%;background:${color}"></div>
+        </div>
+      `;
+      fila.addEventListener('click', () => {
+        // Toggle: si ya está filtrada, se quita el filtro de categoría
+        filtroCategoria = filtroCategoria === cat ? null : cat;
+        render();
+      });
+      desglose.appendChild(fila);
+    });
+  }
+
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+  }
+
+  // --- Acciones ---
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const valor = parseFloat(monto.value);
+    const fechaValor = fecha.value ? new Date(fecha.value).getTime() : Date.now();
+    if (!desc.value.trim() || !isFinite(valor) || valor <= 0) return;
+
+    gastos.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+      descripcion: desc.value.trim(),
+      monto: valor,
+      categoria: categoria.value,
+      detonante: detonanteSeleccionado,
+      fecha: fechaValor
+    });
+    guardar();
+    render();
+    form.reset();
+    fecha.value = ahoraLocal();
+    categoria.value = categoria.options[0].value;
+    detonanteSeleccionado = null;
+    pintarDetonantes();
+    desc.focus();
+    // Salta a la pestaña de Registros para ver el nuevo gasto
+    activarTab('registros');
+  });
+
+  // --- Acciones: Ingresos ---
+  formIngreso.addEventListener('submit', e => {
+    e.preventDefault();
+    const valor = parseFloat(ingMonto.value);
+    const fechaValor = ingFecha.value ? new Date(ingFecha.value).getTime() : Date.now();
+    if (!ingDesc.value.trim() || !isFinite(valor) || valor <= 0) return;
+
+    ingresos.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+      descripcion: ingDesc.value.trim(),
+      monto: valor,
+      fecha: fechaValor
+    });
+    guardar();
+    render();
+    formIngreso.reset();
+    ingFecha.value = ahoraLocal();
+    ingDesc.focus();
+  });
+
+  function eliminarIngreso(id, li) {
+    li.classList.add('removing');
+    setTimeout(() => {
+      ingresos = ingresos.filter(i => i.id !== id);
+      guardar();
+      render();
+    }, 220);
+  }
+
+  btnLimpiarIngresos.addEventListener('click', () => {
+    if (!ingresos.length || !confirm('¿Eliminar todos los ingresos? Esta acción no se puede deshacer.')) return;
+    ingresos = [];
+    guardar();
+    render();
+  });
+
+  // --- Acciones: Gastos fijos ---
+  formFijo.addEventListener('submit', e => {
+    e.preventDefault();
+    const valor = parseFloat(fijoMonto.value);
+    const fechaValor = fijoFecha.value ? new Date(fijoFecha.value).getTime() : Date.now();
+    if (!fijoDesc.value.trim() || !isFinite(valor) || valor <= 0) return;
+
+    fijos.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+      descripcion: fijoDesc.value.trim(),
+      monto: valor,
+      categoria: fijoCategoria.value,
+      fecha: fechaValor
+    });
+    guardar();
+    render();
+    formFijo.reset();
+    fijoFecha.value = ahoraLocal();
+    fijoCategoria.value = fijoCategoria.options[0].value;
+    fijoDesc.focus();
+  });
+
+  function eliminarFijo(id, li) {
+    li.classList.add('removing');
+    setTimeout(() => {
+      fijos = fijos.filter(f => f.id !== id);
+      guardar();
+      render();
+    }, 220);
+  }
+
+  btnLimpiarFijos.addEventListener('click', () => {
+    if (!fijos.length || !confirm('¿Eliminar todos los gastos fijos? Esta acción no se puede deshacer.')) return;
+    fijos = [];
+    guardar();
+    render();
+  });
+
+  // --- Panel de gastos fijos (en la vista Ver gastos) ---
+  const fijosDesde = document.getElementById('fijos-desde');
+  const fijosHasta = document.getElementById('fijos-hasta');
+  const btnFijosTodo = document.getElementById('btn-fijos-todo');
+  const listaFijosPanel = document.getElementById('lista-fijos-panel');
+  const listaFijosPanelVacia = document.getElementById('lista-fijos-panel-vacia');
+  const etiquetaFijosFiltro = document.getElementById('etiqueta-fijos-filtro');
+
+  function fijosPanelFiltrados() {
+    // 1) Partir del filtro principal de Ver gastos (Hoy, 7 días, Este mes, rango)
+    let lista = fijosFiltrados();
+    // 2) Refinar con el filtro de búsqueda propio del panel (Desde/Hasta)
+    const d = fijosDesde.value ? inicioDia(new Date(fijosDesde.value)).getTime() : null;
+    const h = fijosHasta.value ? inicioDia(new Date(fijosHasta.value)).getTime() + 86400000 - 1 : null;
+    if (d != null) lista = lista.filter(f => f.fecha >= d);
+    if (h != null) lista = lista.filter(f => f.fecha <= h);
+    return lista;
+  }
+
+  function renderPanelFijos() {
+    const visibles = fijosPanelFiltrados().sort((a, b) => b.fecha - a.fecha);
+    listaFijosPanel.innerHTML = '';
+    listaFijosPanelVacia.classList.toggle('hidden', visibles.length > 0);
+
+    const fFecha = ts => new Date(ts).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
+    const hayFiltroBusqueda = fijosDesde.value || fijosHasta.value;
+    const etiquetasPeriodo = {
+      todo: 'todos los tiempos',
+      hoy: 'solo hoy',
+      semana: 'últimos 7 días',
+      mes: 'este mes'
+    };
+    const periodo = filtro.tipo === 'rango'
+      ? `desde ${filtro.desde ? fFecha(new Date(filtro.desde).getTime()) : '—'} hasta ${filtro.hasta ? fFecha(new Date(filtro.hasta).getTime()) : '—'}`
+      : (etiquetasPeriodo[filtro.tipo] || 'todos los tiempos');
+    const n = visibles.length;
+    const conteo = `${n} gasto${n !== 1 ? 's' : ''} fijo${n !== 1 ? 's' : ''}`;
+    etiquetaFijosFiltro.textContent = hayFiltroBusqueda
+      ? `Búsqueda en ${periodo}: ${conteo}`
+      : `Filtro activo (${periodo}): ${conteo}`;
+
+    visibles.forEach(f => {
+      const li = document.createElement('li');
+      li.className = 'py-3.5 flex items-center gap-3 pop-in';
+      const emoji = (f.categoria || '📌').split(' ')[0];
+      li.innerHTML = `
+        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:#F9731622">${emoji}</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold truncate">${escapeHTML(f.descripcion)}</p>
+          <p class="text-[11px] text-tinta/50 truncate">${fFecha(f.fecha)} · ${escapeHTML(f.categoria || '')}</p>
+        </div>
+        <p class="text-sm font-bold text-orange-600 whitespace-nowrap">${fmt(f.monto)}</p>
+        <button class="w-8 h-8 shrink-0 grid place-items-center rounded-lg text-tinta/30 hover:text-red-500 hover:bg-red-50 transition" title="Eliminar" aria-label="Eliminar gasto fijo">🗑️</button>
+      `;
+      li.querySelector('button').addEventListener('click', () => {
+        li.classList.add('removing');
+        setTimeout(() => {
+          fijos = fijos.filter(x => x.id !== f.id);
+          guardar();
+          render();
+          renderPanelFijos();
+        }, 220);
+      });
+      listaFijosPanel.appendChild(li);
+    });
+  }
+
+  document.getElementById('btn-fijos-todo').addEventListener('click', () => {
+    fijosDesde.value = '';
+    fijosHasta.value = '';
+    renderPanelFijos();
+  });
+
+  fijosDesde.addEventListener('change', renderPanelFijos);
+  fijosHasta.addEventListener('change', renderPanelFijos);
+
+  function eliminar(id, li) {
+    li.classList.add('removing');
+    setTimeout(() => {
+      gastos = gastos.filter(g => g.id !== id);
+      guardar();
+      render();
+    }, 220);
+  }
+
+  filtrosRapidos.querySelectorAll('.filtro-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filtro = { tipo: btn.dataset.filtro };
+      filtroDesde.value = '';
+      filtroHasta.value = '';
+      filtroCategoria = null; // el filtro de fecha reinicia el de categoría
+      render();
+    });
+  });
+
+  btnAplicarFechas.addEventListener('click', () => {
+    if (!filtroDesde.value && !filtroHasta.value) return;
+    filtro = { tipo: 'rango', desde: filtroDesde.value || null, hasta: filtroHasta.value || null };
+    filtroCategoria = null;
+    render();
+  });
+
+  // --- Exportar a Excel (CSV compatible, respetando el filtro activo) ---
+  btnExportar.addEventListener('click', () => {
+    const visibles = gastosFiltrados().sort((a, b) => b.fecha - a.fecha);
+    if (!visibles.length) return;
+
+    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const filas = [
+      ['Fecha', 'Descripción', 'Categoría', 'Detonante emocional', 'Monto (COP)'].map(esc).join(';')
+    ];
+    visibles.forEach(g => {
+      filas.push([
+        esc(fmtFecha(g.fecha)),
+        esc(g.descripcion),
+        esc(g.categoria),
+        esc(g.detonante || ''),
+        esc(String(g.monto).replace('.', ','))
+      ].join(';'));
+    });
+    // Total al final
+    const total = visibles.reduce((s, g) => s + g.monto, 0);
+    filas.push([esc(''), esc(''), esc(''), esc('TOTAL'), esc(String(total).replace('.', ','))].join(';'));
+
+    // BOM UTF-8 + sep para que Excel lo abra bien en español
+    const csv = '\uFEFF' + filas.join('\r\n');
+    const blob = new Blob([csv], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gastos-hormiga.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  btnLimpiar.addEventListener('click', () => {
+    if (!gastos.length || !confirm('¿Eliminar todos los registros? Esta acción no se puede deshacer.')) return;
+    gastos = [];
+    guardar();
+    render();
+  });
+
+  // --- Init ---
+  fecha.value = ahoraLocal();
+  ingFecha.value = ahoraLocal();
+  fijoFecha.value = ahoraLocal();
+  cargar();
+  alternarDesglose(localStorage.getItem(LS_DESGLOSE_ABIERTO) === '1');
+  alternarHistorial(localStorage.getItem(LS_HISTORIAL_ABIERTO) === '1');
+  activarTab(localStorage.getItem('radar-gastos-hormiga-tab') || 'registrar');
+  render();
+})();
+</script>
+</body>
+</html>
