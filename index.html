@@ -139,6 +139,14 @@
           class="sm:col-span-2 mt-1 bg-uva hover:bg-morado active:scale-[.98] text-white font-semibold text-sm rounded-xl py-3.5 card-shadow transition">
           ✅ Guardar este <span id="txt-tipo-btn">gasto hormiga</span>
         </button>
+        <!-- Últimos gastos guardados (confirmación visual) -->
+        <div id="ultimo-guardado" class="hidden sm:col-span-2 mt-1">
+          <p class="text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-2 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
+            Guardados recientemente
+          </p>
+          <div id="lista-ultimos" class="space-y-2"></div>
+        </div>
       </form>
     </section>
     </div><!-- /vista-registrar -->
@@ -799,6 +807,7 @@
         ? `${visibles.length} gasto${visibles.length !== 1 ? 's' : ''} hormiga${visibles.length !== 1 ? 's' : ''} · toca para ver el detalle`
         : 'Sin gastos en este filtro · toca para ver';
     }
+    renderUltimos();
   }
 
   function renderDesglose(total) {
@@ -883,6 +892,10 @@
     }
     guardar();
     render();
+
+    // Mostrar el gasto recién guardado debajo del botón (confirmación visual)
+    renderUltimos();
+
     form.reset();
     fecha.value = ahoraLocal();
     categoria.value = categoria.options[0].value;
@@ -892,8 +905,6 @@
     // Mantener el tipo de gasto elegido (solo limpia detonante)
     pintarTipoGasto();
     desc.focus();
-    // Salta a la pestaña de Registros para ver el nuevo gasto
-    activarTab('registros');
   });
 
   // --- Acciones: Ingresos ---
@@ -1018,6 +1029,39 @@
   fijosDesde.addEventListener('change', renderPanelFijos);
   fijosHasta.addEventListener('change', renderPanelFijos);
 
+  // --- Últimos guardados (debajo del botón en Registrar gasto) ---
+  const contUltimo = document.getElementById('ultimo-guardado');
+  const listaUltimos = document.getElementById('lista-ultimos');
+
+  function renderUltimos() {
+    // Últimos 3 gastos guardados (hormiga + fijos juntos), los más recientes primero.
+    // Desempate por orden de inserción (indice en su lista) para gastos del mismo minuto.
+    const todos = [
+      ...gastos.map((g, i) => ({ ...g, tipo: 'hormiga', orden: g.fecha * 1000 + i })),
+      ...fijos.map((f, i) => ({ ...f, tipo: 'fijo', orden: f.fecha * 1000 + i }))
+    ].sort((a, b) => b.orden - a.orden).slice(0, 3);
+
+    contUltimo.classList.toggle('hidden', todos.length === 0);
+    listaUltimos.innerHTML = '';
+
+    todos.forEach(g => {
+      const esFijo = g.tipo === 'fijo';
+      const emoji = esFijo ? (g.categoria || '📌').split(' ')[0] : g.categoria.split(' ')[0];
+      const div = document.createElement('div');
+      div.className = 'pop-in flex items-center gap-3 rounded-2xl px-3.5 py-3 ' +
+        (esFijo ? 'bg-orange-100/50 border border-orange-200/60' : 'bg-pastel/25 border border-pastel/60');
+      div.innerHTML = `
+        <div class="w-9 h-9 shrink-0 rounded-xl grid place-items-center text-lg" style="background:${esFijo ? '#F9731622' : '#B0896822'}">${emoji}</div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold truncate">${escapeHTML(g.descripcion)}</p>
+          <p class="text-[11px] text-tinta/50 truncate">${esFijo ? '📌 Gasto fijo' : '🐜 Gasto hormiga'} · ${fmtFecha(g.fecha)}${g.detonante ? ' · ' + escapeHTML(g.detonante) : ''}</p>
+        </div>
+        <p class="text-sm font-bold whitespace-nowrap ${esFijo ? 'text-orange-600' : 'text-uva'}">${fmt(g.monto)}</p>
+      `;
+      listaUltimos.appendChild(div);
+    });
+  }
+
   function eliminar(id, li) {
     li.classList.add('removing');
     setTimeout(() => {
@@ -1095,6 +1139,7 @@
   activarTab(localStorage.getItem('radar-gastos-hormiga-tab') || 'registrar');
   pintarTipoGasto();
   render();
+  renderUltimos();
 })();
 </script>
 </body>
