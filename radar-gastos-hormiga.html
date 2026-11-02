@@ -248,32 +248,32 @@
     <!-- Resumen según el filtro aplicado (tarjetas clicables) -->
     <section class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6" aria-label="Resumen">
       <button id="tarjeta-ingresos" type="button"
-        class="bg-white hover:bg-green-50 rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 group">
+        class="bg-white hover:bg-green-50 rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 group min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide text-green-700/70 group-hover:text-green-600">💰 Total ingresos</p>
-        <p id="total-ingresos" class="text-2xl sm:text-3xl font-extrabold text-green-600 mt-1.5">$ 0</p>
+        <p id="total-ingresos" class="text-xl sm:text-2xl font-extrabold text-green-600 mt-1.5 break-words leading-tight">$ 0</p>
         <p class="text-[11px] text-tinta/50 mt-1 group-hover:text-green-600/70">👆 clic para verlos</p>
       </button>
       <button id="tarjeta-hormiga" type="button"
-        class="bg-gradient-to-br from-uva to-morado hover:from-morado hover:to-uva text-white rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-morado/40">
+        class="bg-gradient-to-br from-uva to-morado hover:from-morado hover:to-uva text-white rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-morado/40 min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide opacity-70">🐜 Gastos hormiga</p>
-        <p id="total-gastado" class="text-2xl sm:text-3xl font-extrabold mt-1.5">$0.00</p>
+        <p id="total-gastado" class="text-xl sm:text-2xl font-extrabold mt-1.5 break-words leading-tight">$0.00</p>
         <p id="etiqueta-moneda" class="text-[11px] opacity-60 mt-1">👆 clic para verlos abajo</p>
       </button>
       <button id="tarjeta-fijos" type="button"
-        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gradient-to-br from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600">
+        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gradient-to-br from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600 min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide opacity-70">📌 Gastos fijos</p>
-        <p id="total-fijos" class="text-2xl sm:text-3xl font-extrabold mt-1.5">$ 0</p>
+        <p id="total-fijos" class="text-xl sm:text-2xl font-extrabold mt-1.5 break-words leading-tight">$ 0</p>
         <p id="etiqueta-fijos" class="text-[11px] opacity-70 mt-1">👆 clic para verlos</p>
       </button>
       <button id="tarjeta-balance" type="button"
-        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300">
+        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 min-w-0">
         <p id="balance-titulo" class="text-xs font-semibold uppercase tracking-wide text-tinta/60">⚖️ Balance neto</p>
-        <p id="total-balance" class="text-2xl sm:text-3xl font-extrabold mt-1.5">$ 0</p>
+        <p id="total-balance" class="text-xl sm:text-2xl font-extrabold mt-1.5 break-words leading-tight">$ 0</p>
         <p id="balance-detalle" class="text-[11px] text-tinta/50 mt-1">ingresos − gastos hormiga − gastos fijos</p>
       </button>
-      <div class="bg-white rounded-3xl card-shadow p-5 sm:p-6 pop-in">
+      <div class="bg-white rounded-3xl card-shadow p-5 sm:p-6 pop-in min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide text-tinta/60">Registros hormiga</p>
-        <p id="total-registros" class="text-2xl sm:text-3xl font-extrabold text-uva mt-1.5">0</p>
+        <p id="total-registros" class="text-xl sm:text-2xl font-extrabold text-uva mt-1.5 break-words leading-tight">0</p>
         <p id="etiqueta-registros" class="text-[11px] text-tinta/50 mt-1">movimientos detectados</p>
       </div>
       <div class="rounded-3xl card-shadow p-5 sm:p-6 pop-in bg-pastel/30 border border-pastel">
@@ -731,13 +731,13 @@
     totalBalanceEl.textContent = fmt(balance);
     // Color del balance: verde si es positivo, rojo/alerta si negativo
     if (balance >= 0) {
-      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 bg-gradient-to-br from-green-500 to-emerald-600 text-white';
+      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 bg-gradient-to-br from-green-500 to-emerald-600 text-white min-w-0';
       balanceTitulo.className = 'text-xs font-semibold uppercase tracking-wide opacity-70';
       balanceTitulo.textContent = '⚖️ Balance neto';
       balanceDetalle.className = 'text-[11px] opacity-70 mt-1';
       balanceDetalle.textContent = 'te queda dinero disponible 🎉';
     } else {
-      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-red-300 bg-gradient-to-br from-rose-500 to-red-600 text-white';
+      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-red-300 bg-gradient-to-br from-rose-500 to-red-600 text-white min-w-0';
       balanceTitulo.className = 'text-xs font-semibold uppercase tracking-wide opacity-70';
       balanceTitulo.textContent = '⚠️ Balance neto';
       balanceDetalle.className = 'text-[11px] opacity-70 mt-1';
