@@ -224,76 +224,7 @@
       </div>
     </section>
 
-    <!-- Resumen según el filtro aplicado (tarjetas clicables) -->
-    <section class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6" aria-label="Resumen">
-      <button id="tarjeta-ingresos" type="button"
-        class="bg-white hover:bg-green-50 rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 group min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide text-green-700/70 group-hover:text-green-600">💰 Total ingresos</p>
-        <p id="total-ingresos" class="text-xl sm:text-2xl font-extrabold text-green-600 mt-1.5 break-words leading-tight">$ 0</p>
-        <p class="text-[11px] text-tinta/50 mt-1 group-hover:text-green-600/70">👆 clic para verlos</p>
-      </button>
-      <button id="tarjeta-hormiga" type="button"
-        class="bg-gradient-to-br from-uva to-morado hover:from-morado hover:to-uva text-white rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-morado/40 min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide opacity-70">🐜 Gastos hormiga</p>
-        <p id="total-gastado" class="text-xl sm:text-2xl font-extrabold mt-1.5 break-words leading-tight">$0.00</p>
-        <p id="etiqueta-moneda" class="text-[11px] opacity-60 mt-1">👆 clic para verlos abajo</p>
-      </button>
-      <button id="tarjeta-fijos" type="button"
-        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-orange-300 bg-gradient-to-br from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600 min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide opacity-70">📌 Gastos fijos</p>
-        <p id="total-fijos" class="text-xl sm:text-2xl font-extrabold mt-1.5 break-words leading-tight">$ 0</p>
-        <p id="etiqueta-fijos" class="text-[11px] opacity-70 mt-1">👆 clic para verlos</p>
-      </button>
-      <button id="tarjeta-balance" type="button"
-        class="rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left transition cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 min-w-0">
-        <p id="balance-titulo" class="text-xs font-semibold uppercase tracking-wide text-tinta/60">⚖️ Balance neto</p>
-        <p id="total-balance" class="text-xl sm:text-2xl font-extrabold mt-1.5 break-words leading-tight">$ 0</p>
-        <p id="balance-detalle" class="text-[11px] text-tinta/50 mt-1">ingresos − gastos hormiga − gastos fijos</p>
-      </button>
-      <div class="bg-white rounded-3xl card-shadow p-5 sm:p-6 pop-in min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide text-tinta/60">Registros hormiga</p>
-        <p id="total-registros" class="text-xl sm:text-2xl font-extrabold text-uva mt-1.5 break-words leading-tight">0</p>
-        <p id="etiqueta-registros" class="text-[11px] text-tinta/50 mt-1">movimientos detectados</p>
-      </div>
-      <div class="rounded-3xl card-shadow p-5 sm:p-6 pop-in bg-pastel/30 border border-pastel">
-        <p class="text-xs font-semibold uppercase tracking-wide text-uva/70">CONSEJO 💡</p>
-        <p class="text-[11px] text-tinta/60 mt-1.5 leading-snug">Los gastos hormiga son pequeños gastos diarios que suman mucho. ¡Regístralos todos!</p>
-      </div>
-    </section>
 
-    <!-- Historial de Gastos Fijos (panel desplegable desde la tarjeta) -->
-    <section id="panel-fijos" class="hidden bg-white rounded-3xl card-shadow mb-6" aria-label="Historial de gastos fijos">
-      <div class="flex items-center justify-between p-5 sm:p-6 pb-0 gap-2">
-        <h2 class="text-base font-bold flex items-center gap-2">
-          <span class="w-1.5 h-5 rounded-full bg-orange-400 inline-block"></span> Gastos fijos
-        </h2>
-        <button id="btn-cerrar-fijos" type="button" class="text-xs font-semibold text-tinta/40 hover:text-red-400 transition">✕ Cerrar</button>
-      </div>
-      <!-- Filtro de búsqueda por fechas (solo para fijos) -->
-      <div class="px-5 sm:px-6 pt-4">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 bg-crema rounded-2xl p-3">
-          <div class="flex-1">
-            <label for="fijos-desde" class="block text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-1">Desde</label>
-            <input id="fijos-desde" type="date"
-              class="w-full bg-white rounded-xl px-3.5 py-2.5 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
-          </div>
-          <div class="flex-1">
-            <label for="fijos-hasta" class="block text-[11px] font-semibold uppercase tracking-wide text-tinta/50 mb-1">Hasta</label>
-            <input id="fijos-hasta" type="date"
-              class="w-full bg-white rounded-xl px-3.5 py-2.5 text-sm border border-nude/60 focus:border-morado focus:ring-2 focus:ring-morado/20 transition">
-          </div>
-          <button id="btn-fijos-todo" type="button"
-            class="text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-5 py-2.5 card-shadow transition sm:self-end">Ver todos</button>
-        </div>
-        <p id="etiqueta-fijos-filtro" class="text-[11px] text-tinta/45 mt-2 px-1"></p>
-      </div>
-      <div class="p-5 sm:p-6 pt-4">
-        <ul id="lista-fijos-panel" class="divide-y divide-arena/80"></ul>
-        <p id="lista-fijos-panel-vacia" class="text-sm text-tinta/40 text-center py-6">
-          Sin gastos fijos en este rango de fechas. 🔍
-        </p>
-      </div>
-    </section>
 
     <!-- Desglose por Categorías (acordeón/botón) -->
     <section class="bg-white rounded-3xl card-shadow mb-6 overflow-hidden" aria-label="Desglose por categorías">
@@ -315,27 +246,18 @@
       </div>
     </section>
 
-  <!-- Historial (acordeón/botón) -->
+  <!-- Historial (siempre visible, debajo del filtro) -->
     <section class="bg-white rounded-3xl card-shadow mb-6 overflow-hidden" aria-label="Historial de gastos">
-      <button id="btn-historial" type="button" aria-expanded="false" aria-controls="contenido-historial"
-        class="w-full flex items-center justify-between gap-3 p-5 sm:p-6 text-left transition hover:bg-pastel/20 active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-morado/40 group">
-        <span class="flex items-center gap-3 min-w-0">
-          <span class="w-10 h-10 shrink-0 rounded-2xl bg-nude/60 text-tinta grid place-items-center text-lg">📋</span>
-          <span class="min-w-0">
-            <span class="block text-sm font-bold text-tinta truncate">Historial de gastos hormiga</span>
-            <span id="resumen-historial" class="block text-[11px] text-tinta/50 truncate">Toca para ver el detalle</span>
-          </span>
-        </span>
-        <span id="chevron-historial" class="shrink-0 text-tinta/30 group-hover:text-uva transition-transform duration-300 text-lg">⌄</span>
-      </button>
-      <div id="contenido-historial" class="hidden px-5 sm:px-7 pb-5 sm:pb-6">
-        <div class="flex items-center justify-between mb-4 gap-2">
-          <div class="flex-1"></div>
-          <div class="flex items-center gap-2">
-            <button id="btn-exportar" class="hidden text-xs font-semibold text-tinta/40 hover:text-green-600 transition">📊 Exportar a Excel</button>
-            <button id="btn-limpiar" class="hidden text-xs font-semibold text-tinta/40 hover:text-red-400 transition">🗑️ Borrar todos los gastos</button>
-          </div>
+      <div class="flex items-center justify-between p-5 sm:p-6 pb-0 gap-2">
+        <h2 class="text-base font-bold flex items-center gap-2">
+          <span class="w-1.5 h-5 rounded-full bg-nude inline-block"></span> Historial de gastos
+        </h2>
+        <div class="flex items-center gap-2">
+          <button id="btn-exportar" class="hidden text-xs font-semibold text-tinta/40 hover:text-green-600 transition">📊 Exportar a Excel</button>
+          <button id="btn-limpiar" class="hidden text-xs font-semibold text-tinta/40 hover:text-red-400 transition">🗑️ Borrar todos los gastos</button>
         </div>
+      </div>
+      <div class="px-5 sm:px-7 pt-4 pb-5 sm:pb-6">
         <ul id="lista-gastos" class="divide-y divide-arena/80"></ul>
         <p id="lista-vacia" class="text-sm text-tinta/40 text-center py-8">
           Sin gastos registrados por ahora. 🌱
@@ -367,14 +289,11 @@
   const monto = document.getElementById('monto');
   const categoria = document.getElementById('categoria');
   const fecha = document.getElementById('fecha');
-  const totalGastado = document.getElementById('total-gastado');
-  const totalRegistros = document.getElementById('total-registros');
   const listaGastos = document.getElementById('lista-gastos');
   const listaVacia = document.getElementById('lista-vacia');
   const desglose = document.getElementById('desglose');
   const desgloseVacio = document.getElementById('desglose-vacio');
   const btnLimpiar = document.getElementById('btn-limpiar');
-  const etiquetaMoneda = document.getElementById('etiqueta-moneda');
   const btnExportar = document.getElementById('btn-exportar');
   const contDetonantes = document.getElementById('detonantes');
 
@@ -440,8 +359,6 @@
   const badgeIngresos = document.getElementById('badge-ingresos');
 
   // --- Gastos fijos: elementos (panel en Ver gastos) ---
-  const totalFijosEl = document.getElementById('total-fijos');
-  const etiquetaFijos = document.getElementById('etiqueta-fijos');
 
   // --- Ingresos: elementos ---
   const formIngreso = document.getElementById('form-ingreso');
@@ -451,11 +368,6 @@
   const listaIngresos = document.getElementById('lista-ingresos');
   const listaIngresosVacia = document.getElementById('lista-ingresos-vacia');
   const btnLimpiarIngresos = document.getElementById('btn-limpiar-ingresos');
-  const totalIngresosEl = document.getElementById('total-ingresos');
-  const totalBalanceEl = document.getElementById('total-balance');
-  const tarjetaBalance = document.getElementById('tarjeta-balance');
-  const balanceTitulo = document.getElementById('balance-titulo');
-  const balanceDetalle = document.getElementById('balance-detalle');
 
   // --- Filtro por fechas ---
   const filtrosRapidos = document.getElementById('filtros-rapidos');
@@ -559,60 +471,6 @@
   tabIngresos.addEventListener('click', () => activarTab('ingresos'));
   tabRegistros.addEventListener('click', () => activarTab('registros'));
 
-  // --- Tarjetas del dashboard clicables ---
-  const tarjetaIngresos = document.getElementById('tarjeta-ingresos');
-  const tarjetaHormiga = document.getElementById('tarjeta-hormiga');
-  const tarjetaFijos = document.getElementById('tarjeta-fijos');
-
-  // Total ingresos → muestra todos los ingresos (pestaña Ingresos)
-  tarjetaIngresos.addEventListener('click', () => {
-    filtro = { tipo: 'todo' }; // sin filtro de fechas → muestra TODOS
-    filtroCategoria = null;
-    filtroDesde.value = '';
-    filtroHasta.value = '';
-    render();
-    activarTab('ingresos');
-  });
-
-  // Gastos hormiga → abre el historial de gastos hormiga (acordeón) y hace scroll
-  tarjetaHormiga.addEventListener('click', () => {
-    filtro = { tipo: 'todo' };
-    filtroCategoria = null;
-    filtroDesde.value = '';
-    filtroHasta.value = '';
-    render();
-    activarTab('registros');
-    alternarHistorial(true); // abrir el historial
-    document.getElementById('btn-historial').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  // Gastos fijos → muestra el panel de historial de fijos AQUÍ (desplegable con filtro)
-  tarjetaFijos.addEventListener('click', () => {
-    const panel = document.getElementById('panel-fijos');
-    const abierto = !panel.classList.contains('hidden');
-    panel.classList.toggle('hidden');
-    if (!abierto) {
-      renderPanelFijos();
-      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-
-  // Cerrar panel de fijos
-  document.getElementById('btn-cerrar-fijos').addEventListener('click', () => {
-    document.getElementById('panel-fijos').classList.add('hidden');
-  });
-
-  // Balance neto → muestra el desglose (dónde se va el dinero)
-  tarjetaBalance.addEventListener('click', () => {
-    activarTab('registros');
-    alternarDesglose(true); // abrir el desglose
-    document.getElementById('btn-desglose').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-
-  // Tarjeta "Registros" del panel de resumen → abre la vista de registros
-  const tarjetaRegistros = document.getElementById('tarjeta-registros');
-  if (tarjetaRegistros) tarjetaRegistros.addEventListener('click', () => activarTab('registros'));
-
   // --- Acordeón "¿Dónde se va el presupuesto?" ---
   const btnDesglose = document.getElementById('btn-desglose');
   const contenidoDesglose = document.getElementById('contenido-desglose');
@@ -629,23 +487,6 @@
   }
 
   btnDesglose.addEventListener('click', () => alternarDesglose());
-
-  // --- Acordeón "Historial de gastos hormiga" ---
-  const btnHistorial = document.getElementById('btn-historial');
-  const contenidoHistorial = document.getElementById('contenido-historial');
-  const chevronHistorial = document.getElementById('chevron-historial');
-  const resumenHistorial = document.getElementById('resumen-historial');
-  const LS_HISTORIAL_ABIERTO = 'radar-gastos-hormiga-historial';
-
-  function alternarHistorial(forzar) {
-    const abierto = forzar !== undefined ? forzar : contenidoHistorial.classList.contains('hidden');
-    contenidoHistorial.classList.toggle('hidden', !abierto);
-    btnHistorial.setAttribute('aria-expanded', String(abierto));
-    chevronHistorial.style.transform = abierto ? 'rotate(180deg)' : '';
-    localStorage.setItem(LS_HISTORIAL_ABIERTO, abierto ? '1' : '0');
-  }
-
-  btnHistorial.addEventListener('click', () => alternarHistorial());
 
   // --- Estado / Persistencia ---
   let gastos = [];
@@ -693,50 +534,13 @@
 
   // --- Render ---
   function render() {
-    // Resumen (basado en los gastos filtrados)
+    // Gastos visibles según el filtro
     const visibles = gastosFiltrados();
     const total = visibles.reduce((s, g) => s + g.monto, 0);
-    totalGastado.textContent = fmt(total);
-    etiquetaMoneda.textContent = 'en gastos hormiga · COP';
-    totalRegistros.textContent = visibles.length;
-    const etiquetaRegistros = document.getElementById('etiqueta-registros');
-    if (etiquetaRegistros) {
-      etiquetaRegistros.textContent = gastos.length
-        ? (visibles.length === gastos.length ? 'movimientos detectados' : `de ${gastos.length} registrados`)
-        : 'movimientos detectados';
-    }
 
-    // Ingresos y balance (ingresos filtrados por fecha, sin filtro de categoría)
+    // Historial de ingresos
     const ingVisibles = ingresosFiltrados();
-    const totalIng = ingVisibles.reduce((s, i) => s + i.monto, 0);
-    totalIngresosEl.textContent = fmt(totalIng);
     badgeIngresos.textContent = ingresos.length;
-
-    // Gastos fijos (filtrados por fecha)
-    const fijosVisibles = fijosFiltrados();
-    const totalFijos = fijosVisibles.reduce((s, f) => s + f.monto, 0);
-    totalFijosEl.textContent = fmt(totalFijos);
-    etiquetaFijos.textContent = fijos.length
-      ? `${fijos.length} gasto${fijos.length > 1 ? 's' : ''} fijo${fijos.length > 1 ? 's' : ''} · arriendo, servicios, suscripciones…`
-      : 'arriendo, servicios, suscripciones…';
-
-    // Balance neto: ingresos − gastos hormiga − gastos fijos
-    const balance = totalIng - total - totalFijos;
-    totalBalanceEl.textContent = fmt(balance);
-    // Color del balance: verde si es positivo, rojo/alerta si negativo
-    if (balance >= 0) {
-      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-green-300 bg-gradient-to-br from-green-500 to-emerald-600 text-white min-w-0';
-      balanceTitulo.className = 'text-xs font-semibold uppercase tracking-wide opacity-70';
-      balanceTitulo.textContent = '⚖️ Balance neto';
-      balanceDetalle.className = 'text-[11px] opacity-70 mt-1';
-      balanceDetalle.textContent = 'te queda dinero disponible 🎉';
-    } else {
-      tarjetaBalance.className = 'rounded-3xl card-shadow p-5 sm:p-6 pop-in transition-colors text-left cursor-pointer active:scale-[.98] focus:outline-none focus:ring-2 focus:ring-red-300 bg-gradient-to-br from-rose-500 to-red-600 text-white min-w-0';
-      balanceTitulo.className = 'text-xs font-semibold uppercase tracking-wide opacity-70';
-      balanceTitulo.textContent = '⚠️ Balance neto';
-      balanceDetalle.className = 'text-[11px] opacity-70 mt-1';
-      balanceDetalle.textContent = 'tus gastos superan tus ingresos';
-    }
 
     // Historial de ingresos
     listaIngresos.innerHTML = '';
@@ -764,49 +568,61 @@
       listaIngresos.appendChild(li);
     });
 
-    badgeRegistros.textContent = gastos.length;
+    badgeRegistros.textContent = gastos.length + fijos.length;
     etiquetaFiltro.textContent = textoFiltro();
     pintarBotonesFiltro();
 
-    // Historial
+    // Historial: gastos hormiga + fijos (todos los gastos), según el filtro
     listaGastos.innerHTML = '';
-    const hayDatos = visibles.length > 0;
+    let fijosEnHistorial = fijosFiltrados();
+    // El filtro de categoría (desde el desglose) también aplica a los fijos
+    if (filtroCategoria) {
+      fijosEnHistorial = fijosEnHistorial.filter(f => f.categoria === filtroCategoria);
+    }
+    const todosGastos = [
+      ...visibles.map(g => ({ ...g, tipo: 'hormiga' })),
+      ...fijosEnHistorial.map(f => ({ ...f, tipo: 'fijo' }))
+    ].sort((a, b) => b.fecha - a.fecha);
+    const hayDatos = todosGastos.length > 0;
     listaVacia.classList.toggle('hidden', hayDatos);
-    btnLimpiar.classList.toggle('hidden', gastos.length === 0);
+    btnLimpiar.classList.toggle('hidden', gastos.length === 0 && fijos.length === 0);
     btnExportar.classList.toggle('hidden', visibles.length === 0);
-    listaVacia.textContent = gastos.length
+    listaVacia.textContent = (gastos.length || fijos.length)
       ? 'Ningún gasto en este rango de fechas. 🔍'
       : 'Sin gastos registrados por ahora. 🌱';
 
-    [...visibles].sort((a, b) => b.fecha - a.fecha).forEach(g => {
+    todosGastos.forEach(g => {
+      const esFijo = g.tipo === 'fijo';
       const li = document.createElement('li');
       li.className = 'py-3.5 flex items-center gap-3 pop-in';
       li.dataset.id = g.id;
+      const emoji = esFijo ? (g.categoria || '📌').split(' ')[0] : g.categoria.split(' ')[0];
       li.innerHTML = `
-        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:${(COLORES[g.categoria] || '#B08968')}22">${g.categoria.split(' ')[0]}</div>
+        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:${esFijo ? '#F9731622' : (COLORES[g.categoria] || '#B08968') + '22'}">${emoji}</div>
         <div class="min-w-0 flex-1">
           <p class="text-sm font-semibold truncate">${escapeHTML(g.descripcion)}</p>
-          <p class="text-[11px] text-tinta/50 truncate">${fmtFecha(g.fecha)} · ${g.categoria}${g.detonante ? ' · ' + escapeHTML(g.detonante) : ''}</p>
+          <p class="text-[11px] text-tinta/50 truncate">${fmtFecha(g.fecha)} · ${esFijo ? '📌 Gasto fijo · ' + escapeHTML(g.categoria || '') : escapeHTML(g.categoria)}${g.detonante ? ' · ' + escapeHTML(g.detonante) : ''}</p>
         </div>
-        <p class="text-sm font-bold whitespace-nowrap">${fmt(g.monto)}</p>
+        <p class="text-sm font-bold whitespace-nowrap ${esFijo ? 'text-orange-600' : ''}">${fmt(g.monto)}</p>
         <button class="w-8 h-8 shrink-0 grid place-items-center rounded-lg text-tinta/30 hover:text-red-500 hover:bg-red-50 transition" title="Eliminar" aria-label="Eliminar gasto">🗑️</button>
       `;
-      li.querySelector('button').addEventListener('click', () => eliminar(g.id, li));
+      li.querySelector('button').addEventListener('click', () => {
+        if (esFijo) {
+          li.classList.add('removing');
+          setTimeout(() => {
+            fijos = fijos.filter(x => x.id !== g.id);
+            guardar();
+            render();
+          }, 220);
+        } else {
+          eliminar(g.id, li);
+        }
+      });
       listaGastos.appendChild(li);
     });
 
     renderDesglose(total);
 
-    // Refrescar el panel de gastos fijos si está abierto (respeta el filtro principal)
-    const panelFijosAbierto = !document.getElementById('panel-fijos').classList.contains('hidden');
-    if (panelFijosAbierto) renderPanelFijos();
-
-    // Resumen del botón del acordeón de historial
-    if (resumenHistorial) {
-      resumenHistorial.textContent = visibles.length
-        ? `${visibles.length} gasto${visibles.length !== 1 ? 's' : ''} hormiga${visibles.length !== 1 ? 's' : ''} · toca para ver el detalle`
-        : 'Sin gastos en este filtro · toca para ver';
-    }
     renderUltimos();
   }
 
@@ -817,44 +633,93 @@
     visibles.forEach(g => { porCat[g.categoria] = (porCat[g.categoria] || 0) + g.monto; });
     const entradas = Object.entries(porCat).sort((a, b) => b[1] - a[1]);
 
+    // Gastos fijos filtrados por el mismo periodo
+    const fijosVis = fijosFiltrados();
+    const totalFijos = fijosVis.reduce((s, f) => s + f.monto, 0);
+    const porCatFijo = {};
+    fijosVis.forEach(f => { porCatFijo[f.categoria] = (porCatFijo[f.categoria] || 0) + f.monto; });
+    const entradasFijo = Object.entries(porCatFijo).sort((a, b) => b[1] - a[1]);
+
+    const hayAlgo = entradas.length > 0 || entradasFijo.length > 0;
+
     desglose.innerHTML = '';
-    desgloseVacio.classList.toggle('hidden', entradas.length > 0);
-    if (!entradas.length) {
+    desgloseVacio.classList.toggle('hidden', hayAlgo);
+    if (!hayAlgo) {
       desglose.appendChild(desgloseVacio);
       resumenDesglose.textContent = 'Toca para ver el desglose';
       return;
     }
 
-    // Resumen del botón: categoría dominante
-    const [topCat, topSuma] = entradas[0];
-    const topPct = total > 0 ? (topSuma / total) * 100 : 0;
-    resumenDesglose.textContent = entradas.length === 1
-      ? `Todo en ${topCat} (${topPct.toFixed(0)}%)`
-      : `Mayor: ${topCat} · ${topPct.toFixed(0)}% · toca para ver todo`;
+    // Resumen del botón: categoría dominante (incluye fijos en el mensaje)
+    const todo = [...entradas.map(e => e[1]), totalFijos].sort((a, b) => b - a)[0] || 0;
+    const [topCat, topSuma] = entradas[0] || [null, 0];
+    const esFijoElMayor = totalFijos > (topSuma || 0);
+    const pctMayor = (total + totalFijos) > 0 ? (todo / (total + totalFijos)) * 100 : 0;
+    resumenDesglose.textContent = esFijoElMayor
+      ? `Mayor: 📌 Gastos fijos · ${pctMayor.toFixed(0)}% · toca para ver todo`
+      : (entradas.length === 1 && !entradasFijo.length
+        ? `Todo en ${topCat} (${pctMayor.toFixed(0)}%)`
+        : `Mayor: ${topCat} · ${pctMayor.toFixed(0)}% · toca para ver todo`);
 
-    entradas.forEach(([cat, suma]) => {
-      const pct = total > 0 ? (suma / total) * 100 : 0;
-      const color = COLORES[cat] || '#B08968';
+    const crearFila = (cat, suma, pctBase, color, esFijo) => {
       const fila = document.createElement('div');
       const activa = filtroCategoria === cat;
-      fila.className = 'cat-fila rounded-2xl p-3 -mx-1 transition cursor-pointer hover:bg-crema active:scale-[.99] ' + (activa ? 'bg-pastel/30 ring-1 ring-morado/40' : '');
+      fila.className = 'cat-fila rounded-2xl p-3 -mx-1 transition cursor-pointer hover:bg-crema active:scale-[.99] ' + (activa ? (esFijo ? 'bg-orange-100/60 ring-1 ring-orange-300/60' : 'bg-pastel/30 ring-1 ring-morado/40') : '');
       fila.title = activa ? `Filtrado: ${cat} — clic para quitar filtro` : `Clic para ver solo los gastos de ${cat}`;
       fila.innerHTML = `
         <div class="flex items-center justify-between text-sm mb-1.5 gap-2">
           <span class="font-medium truncate">${escapeHTML(cat)}</span>
-          <span class="text-tinta/60 font-semibold whitespace-nowrap">${fmt(suma)} <span class="text-tinta/40 font-normal">· ${pct.toFixed(1)}%</span>${activa ? ' <span class="text-uva text-[10px] align-middle">✓</span>' : ''}</span>
+          <span class="text-tinta/60 font-semibold whitespace-nowrap">${fmt(suma)} <span class="text-tinta/40 font-normal">· ${pctBase.toFixed(1)}%</span>${activa ? ' <span class="text-uva text-[10px] align-middle">✓</span>' : ''}</span>
         </div>
         <div class="h-2.5 rounded-full bg-arena overflow-hidden">
-          <div class="h-full rounded-full transition-all duration-700 ease-out" style="width:${pct}%;background:${color}"></div>
+          <div class="h-full rounded-full transition-all duration-700 ease-out" style="width:${pctBase}%;background:${color}"></div>
         </div>
       `;
       fila.addEventListener('click', () => {
-        // Toggle: si ya está filtrada, se quita el filtro de categoría
         filtroCategoria = filtroCategoria === cat ? null : cat;
         render();
       });
-      desglose.appendChild(fila);
-    });
+      return fila;
+    };
+
+    const totalGeneral = total + totalFijos;
+
+    // --- Sección Gastos Fijos (primera, destacada en naranja) ---
+    if (entradasFijo.length) {
+      const seccionFijos = document.createElement('div');
+      seccionFijos.className = 'mb-5';
+      seccionFijos.innerHTML = `
+        <div class="flex items-center justify-between gap-2 mb-3 px-1">
+          <span class="text-[11px] font-bold uppercase tracking-wide text-orange-600 flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-orange-100 grid place-items-center text-xs">📌</span> Gastos fijos
+          </span>
+          <span class="text-[11px] font-semibold text-orange-600/80">${fmt(totalFijos)} <span class="text-tinta/40 font-normal">· ${totalGeneral > 0 ? ((totalFijos / totalGeneral) * 100).toFixed(1) : 0}% del total</span></span>
+        </div>
+      `;
+      entradasFijo.forEach(([cat, suma]) => {
+        const pct = totalGeneral > 0 ? (suma / totalGeneral) * 100 : 0;
+        seccionFijos.appendChild(crearFila(cat, suma, pct, '#F97316', true));
+      });
+      desglose.appendChild(seccionFijos);
+    }
+
+    // --- Sección Gastos hormiga ---
+    if (entradas.length) {
+      const seccionHormiga = document.createElement('div');
+      seccionHormiga.innerHTML = `
+        <div class="flex items-center justify-between gap-2 mb-3 px-1">
+          <span class="text-[11px] font-bold uppercase tracking-wide text-uva flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-pastel/60 grid place-items-center text-xs">🐜</span> Gastos hormiga
+          </span>
+          <span class="text-[11px] font-semibold text-uva/80">${fmt(total)} <span class="text-tinta/40 font-normal">· ${totalGeneral > 0 ? ((total / totalGeneral) * 100).toFixed(1) : 0}% del total</span></span>
+        </div>
+      `;
+      entradas.forEach(([cat, suma]) => {
+        const pct = totalGeneral > 0 ? (suma / totalGeneral) * 100 : 0;
+        seccionHormiga.appendChild(crearFila(cat, suma, pct, COLORES[cat] || '#B08968', false));
+      });
+      desglose.appendChild(seccionHormiga);
+    }
   }
 
   function escapeHTML(str) {
@@ -952,82 +817,6 @@
       render();
     }, 220);
   }
-
-  // --- Panel de gastos fijos (en la vista Ver gastos) ---
-  const fijosDesde = document.getElementById('fijos-desde');
-  const fijosHasta = document.getElementById('fijos-hasta');
-  const btnFijosTodo = document.getElementById('btn-fijos-todo');
-  const listaFijosPanel = document.getElementById('lista-fijos-panel');
-  const listaFijosPanelVacia = document.getElementById('lista-fijos-panel-vacia');
-  const etiquetaFijosFiltro = document.getElementById('etiqueta-fijos-filtro');
-
-  function fijosPanelFiltrados() {
-    // 1) Partir del filtro principal de Ver gastos (Hoy, 7 días, Este mes, rango)
-    let lista = fijosFiltrados();
-    // 2) Refinar con el filtro de búsqueda propio del panel (Desde/Hasta)
-    const d = fijosDesde.value ? inicioDia(new Date(fijosDesde.value)).getTime() : null;
-    const h = fijosHasta.value ? inicioDia(new Date(fijosHasta.value)).getTime() + 86400000 - 1 : null;
-    if (d != null) lista = lista.filter(f => f.fecha >= d);
-    if (h != null) lista = lista.filter(f => f.fecha <= h);
-    return lista;
-  }
-
-  function renderPanelFijos() {
-    const visibles = fijosPanelFiltrados().sort((a, b) => b.fecha - a.fecha);
-    listaFijosPanel.innerHTML = '';
-    listaFijosPanelVacia.classList.toggle('hidden', visibles.length > 0);
-
-    const fFecha = ts => new Date(ts).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
-    const hayFiltroBusqueda = fijosDesde.value || fijosHasta.value;
-    const etiquetasPeriodo = {
-      todo: 'todos los tiempos',
-      hoy: 'solo hoy',
-      semana: 'últimos 7 días',
-      mes: 'este mes'
-    };
-    const periodo = filtro.tipo === 'rango'
-      ? `desde ${filtro.desde ? fFecha(new Date(filtro.desde).getTime()) : '—'} hasta ${filtro.hasta ? fFecha(new Date(filtro.hasta).getTime()) : '—'}`
-      : (etiquetasPeriodo[filtro.tipo] || 'todos los tiempos');
-    const n = visibles.length;
-    const conteo = `${n} gasto${n !== 1 ? 's' : ''} fijo${n !== 1 ? 's' : ''}`;
-    etiquetaFijosFiltro.textContent = hayFiltroBusqueda
-      ? `Búsqueda en ${periodo}: ${conteo}`
-      : `Filtro activo (${periodo}): ${conteo}`;
-
-    visibles.forEach(f => {
-      const li = document.createElement('li');
-      li.className = 'py-3.5 flex items-center gap-3 pop-in';
-      const emoji = (f.categoria || '📌').split(' ')[0];
-      li.innerHTML = `
-        <div class="w-10 h-10 shrink-0 rounded-xl grid place-items-center text-lg" style="background:#F9731622">${emoji}</div>
-        <div class="min-w-0 flex-1">
-          <p class="text-sm font-semibold truncate">${escapeHTML(f.descripcion)}</p>
-          <p class="text-[11px] text-tinta/50 truncate">${fFecha(f.fecha)} · ${escapeHTML(f.categoria || '')}</p>
-        </div>
-        <p class="text-sm font-bold text-orange-600 whitespace-nowrap">${fmt(f.monto)}</p>
-        <button class="w-8 h-8 shrink-0 grid place-items-center rounded-lg text-tinta/30 hover:text-red-500 hover:bg-red-50 transition" title="Eliminar" aria-label="Eliminar gasto fijo">🗑️</button>
-      `;
-      li.querySelector('button').addEventListener('click', () => {
-        li.classList.add('removing');
-        setTimeout(() => {
-          fijos = fijos.filter(x => x.id !== f.id);
-          guardar();
-          render();
-          renderPanelFijos();
-        }, 220);
-      });
-      listaFijosPanel.appendChild(li);
-    });
-  }
-
-  document.getElementById('btn-fijos-todo').addEventListener('click', () => {
-    fijosDesde.value = '';
-    fijosHasta.value = '';
-    renderPanelFijos();
-  });
-
-  fijosDesde.addEventListener('change', renderPanelFijos);
-  fijosHasta.addEventListener('change', renderPanelFijos);
 
   // --- Últimos guardados (debajo del botón en Registrar gasto) ---
   const contUltimo = document.getElementById('ultimo-guardado');
@@ -1135,7 +924,6 @@
   ingFecha.value = ahoraLocal();
   cargar();
   alternarDesglose(localStorage.getItem(LS_DESGLOSE_ABIERTO) === '1');
-  alternarHistorial(localStorage.getItem(LS_HISTORIAL_ABIERTO) === '1');
   activarTab(localStorage.getItem('radar-gastos-hormiga-tab') || 'registrar');
   pintarTipoGasto();
   render();
